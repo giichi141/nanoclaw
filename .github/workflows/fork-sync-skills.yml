@@ -31,19 +31,19 @@ jobs:
           HAS_APP_CREDS: ${{ secrets.APP_ID != '' && secrets.APP_PRIVATE_KEY != '' }}
         run: echo "use_app=$HAS_APP_CREDS" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         if: steps.token.outputs.use_app == 'true'
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token || github.token }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
@@ -204,7 +204,7 @@ jobs:
       - name: Open issue for upstream sync failure
         if: steps.sync.outputs.sync_failed == 'true'
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             try {
@@ -235,7 +235,7 @@ jobs:
       - name: Open issue for failed skill merges
         if: steps.merge.outputs.failed != ''
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const failed = '${{ steps.merge.outputs.failed }}'.trim().split(/\s+/);
