@@ -508,6 +508,7 @@ async function runQuery(
         'NotebookEdit',
         'mcp__nanoclaw__*',
         'mcp__ollama__*',
+        'mcp__gemini__*',
       ],
       env: sdkEnv,
       permissionMode: 'bypassPermissions',
@@ -526,6 +527,10 @@ async function runQuery(
         ollama: {
           command: 'node',
           args: [path.join(path.dirname(mcpServerPath), 'ollama-mcp-stdio.js')],
+        },
+        gemini: {
+          command: 'node',
+          args: [path.join(path.dirname(mcpServerPath), 'gemini-mcp-stdio.js')],
         },
       },
       hooks: {
@@ -666,10 +671,7 @@ async function main(): Promise<void> {
 
   // Credentials are injected by the host's credential proxy via ANTHROPIC_BASE_URL.
   // No real secrets exist in the container environment.
-  const sdkEnv: Record<string, string | undefined> = {
-    ...process.env,
-    CLAUDE_CODE_AUTO_COMPACT_WINDOW: '165000',
-  };
+  const sdkEnv: Record<string, string | undefined> = { ...process.env };
 
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const mcpServerPath = path.join(__dirname, 'ipc-mcp-stdio.js');
